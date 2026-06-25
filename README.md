@@ -2,24 +2,33 @@
 
 ## Overview
 
-Agent Infrastructure SaaS is a platform that allows users to describe their AI application requirements in natural language. The system uses multiple AI agents to design infrastructure, estimate costs, generate deployment configurations, monitor infrastructure usage, and provide optimization recommendations.
+Agent Infrastructure SaaS is a platform where users and enterprises describe their AI application requirements in natural language. A multi-agent system designs the optimal infrastructure, estimates cost and trade-offs, generates deployment configurations, monitors compute and token budgets in real time, and surfaces proactive optimization recommendations.
 
 ---
 
 # Project Goal
 
-Build a SaaS platform where users can describe their application requirements and receive:
+Build a SaaS platform where users and enterprises describe their application requirements and receive:
 
-* Infrastructure recommendations
-* Cost estimations
-* Deployment configurations
-* Infrastructure monitoring
-* LLM/API usage tracking
-* Optimization recommendations
+* Infrastructure recommendations with trade-offs (performance vs. cost, managed vs. self-hosted)
+* Cost estimates covering infra, LLM tokens, and external API tokens
+* Generated deployment configurations (Terraform / Docker)
+* Real-time monitoring of compute resources and token budgets
+* Independent tracking of API tokens and LLM tokens
+* Burn-rate alerts, per-request cost anomalies, and projected budget overruns per token type
+* Actionable optimization recommendations with projected savings
 
 ---
 
 # Example User Input
+
+Natural-language input from the user:
+
+```text
+We're building a RAG pipeline for 10,000 daily users with sub-2s latency.
+```
+
+The Planner Agent infers and structures this into:
 
 ```text
 Build a RAG chatbot application.
@@ -31,6 +40,19 @@ Requirements:
 - Store 1 million documents
 - Use OpenAI models
 ```
+
+---
+
+# Token Budget Tracking
+
+Token consumption is tracked as a first-class signal. **API tokens** (external services billed per call) and **LLM tokens** (prompt + completion tokens) are monitored **independently** — each with its own budget, alerts, and projections.
+
+For each token type the platform tracks:
+
+* **Burn rate** — consumption per minute, with spike detection (e.g. 3x baseline in a 5-minute window)
+* **Per-request cost** — token cost per request vs. a rolling baseline, with anomaly detection on outliers
+* **Projected budget overrun** — current burn extrapolated against the remaining period budget
+* **Optimization hooks** — signals are surfaced to the Optimization Agent as recommendations
 
 ---
 
@@ -146,6 +168,7 @@ Cloud:
 * Select vector databases
 * Determine compute requirements
 * Recommend scaling strategy
+* Present trade-offs (performance vs. cost, managed vs. self-hosted, latency vs. throughput)
 
 ---
 
@@ -182,8 +205,10 @@ Total:
 
 * Calculate infrastructure costs
 * Estimate LLM usage costs
+* Estimate external API token costs
 * Compare estimated cost against budget
-* Generate cost breakdown
+* Generate cost breakdown by category (infra / LLM / external API)
+* Surface cost / performance trade-offs (e.g. reserved vs. on-demand, larger instance vs. horizontal scale)
 
 ### Feedback Loop
 
@@ -256,6 +281,15 @@ Error Rate
 Throughput
 ```
 
+### Token Budget Tracking
+
+API tokens (external service calls) and LLM tokens (prompt + completion) are tracked **independently**. Each maintains its own:
+
+* **Burn rate** — token consumption per minute, with spike detection
+* **Per-request cost** — token cost per request vs. rolling baseline
+* **Projected overrun** — current burn extrapolated against the period budget
+* **Cost anomalies** — outlier requests that consumed disproportionate tokens
+
 ### LLM Metrics
 
 ```text
@@ -304,6 +338,10 @@ LLM Cost:
 ### Example Recommendations
 
 ```text
+Your prompt tokens are 3x the completion tokens; consider compressing your system prompt.
+
+Switch to a smaller model for classification tasks; projected savings of 40% on LLM costs.
+
 Increase ECS task count
 
 Add Redis cache
@@ -423,6 +461,20 @@ Monitoring Dashboard
 
 ---
 
+# Technical Expectations
+
+The platform is built around these load-bearing capabilities:
+
+* **Agentic reasoning loop** — Planner → Infrastructure → Cost → Deploy → Monitor → Optimize, with feedback loops on cost overruns
+* **Monitoring dashboard UI** — real-time view of compute, latency, errors, and token budgets (deployable or simulated)
+* **API token tracking** — independent metering of external service calls, with burn-rate and budget alerts
+* **LLM token tracking** — prompt + completion tokens per request, per model
+* **Optimization recommendations** — actionable, each with projected savings
+* **Infra cost analysis** — infra + LLM + external API, with budget-overrun projection and trade-off framing
+* **Tool use** — agents call external tools (cost APIs, IaC generators, metrics stores) via LangGraph
+
+---
+
 # MVP Scope
 
 ## Phase 1
@@ -466,10 +518,11 @@ Monitoring Dashboard
 
 The platform should be able to:
 
-1. Understand user requirements.
-2. Design infrastructure automatically.
-3. Estimate infrastructure and LLM costs.
-4. Generate deployment configurations.
-5. Monitor infrastructure and token usage.
-6. Detect anomalies and bottlenecks.
-7. Recommend infrastructure and cost optimizations.
+1. Understand natural-language requirements from users and enterprises.
+2. Design infrastructure automatically and surface trade-offs.
+3. Estimate infrastructure, LLM, and external API costs against a stated budget.
+4. Generate deployment configurations (Terraform / Docker).
+5. Monitor compute, latency, errors, and token budgets in real time.
+6. Track API tokens and LLM tokens independently, with burn-rate and anomaly detection.
+7. Detect anomalies, bottlenecks, and projected budget overruns.
+8. Recommend optimizations with projected savings.

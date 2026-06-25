@@ -1,7 +1,7 @@
 # Minimal dev stack placeholder.
 # Fill in as services are added (backend, frontend, postgres, redis, monitoring).
 
-services:
+# services:
   # backend:
   #   build: ./backend
   #   ports:
