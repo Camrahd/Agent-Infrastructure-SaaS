@@ -1,0 +1,77 @@
+# ----- Python / Poetry -----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+.eggs/
+build/
+dist/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# Poetry
+.poetry/
+
+# ----- Environment / Secrets -----
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets/
+
+# ----- IDE / Editor -----
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+*.iml
+*.sublime-workspace
+.fleet/
+
+# ----- Testing / Coverage -----
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.tox/
+.cache
+.mypy_cache/
+.ruff_cache/
+
+# ----- Logs -----
+*.log
+logs/
+
+# ----- Node / Frontend (when added) -----
+node_modules/
+.next/
+.nuxt/
+.parcel-cache/
+.pnpm-store/
+yarn-error.log
+npm-debug.log*
+pnpm-debug.log*
+
+# ----- Build artifacts -----
+*.tsbuildinfo
+out/
+target/
+
+# ----- Misc -----
+*.tmp
+*.bak
+*.swp
+.tmp/
