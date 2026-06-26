@@ -1,0 +1,16 @@
+# LLM and embedding model configuration consumed by factory.py.
+# Override any field per-call by passing kwargs to get_llm() / get_embedding_model().
+# API keys are NEVER stored here — read from environment variables (e.g. OPENAI_API_KEY).
+
+llm:
+  provider: openai
+  model: gpt-4o-mini          # cost-effective default; switch to gpt-4o for harder reasoning
+  temperature: 0.0            # deterministic for infra planning / cost estimation
+  max_tokens: 2048
+  timeout: 60                 # seconds per request
+  max_retries: 2
+
+embedding:
+  provider: openai
+  model: text-embedding-3-small
+  dimensions: 1536
