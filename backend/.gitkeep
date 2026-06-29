@@ -1,2 +1,0 @@
-# Python backend (FastAPI + LangGraph). See backend/pyproject.toml.
-# Add `app/`, `tests/`, etc. as the project grows.

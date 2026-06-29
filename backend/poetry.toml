@@ -1,0 +1,4 @@
+# Keep the virtualenv inside the project (backend/.venv) so it's easy to find
+# and matches the paths used in RUNNING.md.
+[virtualenvs]
+in-project = true
